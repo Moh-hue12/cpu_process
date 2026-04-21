@@ -1,7 +1,7 @@
 #include "../utils.h"
 #define MAX_CAP 1000
 
-void fsjf(Process p[], int n) {
+void srtf(Process p[], int n) {
   MinHeap *heap = create_heap(MAX_CAP);
   int j = 0;
   int time = 0; // current time
