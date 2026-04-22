@@ -1,94 +1,106 @@
-#include "Scheduling_Algorithms/Algorithms.h"
-
-#define MAX_Size 100
+#include "Algorithms.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 int main() {
-  // char buffer[MAX_Size];
-  // int np, quantum, num_queues;
-  //
-  // // 1. Number of processes
-  // printf("Enter number of processes: ");
-  // fgets(buffer, sizeof(buffer), stdin);
-  // sscanf(buffer, "%d", &np);
-  //
-  // // Allocate array of Process
-  // Process *p = malloc(np * sizeof(Process));
-  //
-  // // 2. Read each process: id, at, bt, priority
-  // for (int i = 0; i < np; i++) {
-  //   printf("\n--- Process %d ---\n", i + 1);
-  //   printf("  Identifier: ");
-  //   fgets(buffer, sizeof(buffer), stdin);
-  //   sscanf(buffer, "%d", &p[i].id);
-  //   printf("  Arrival time: ");
-  //   fgets(buffer, sizeof(buffer), stdin);
-  //   sscanf(buffer, "%d", &p[i].at);
-  //   printf("  Burst time: ");
-  //   fgets(buffer, sizeof(buffer), stdin);
-  //   sscanf(buffer, "%d", &p[i].et);
-  //   printf("  Priority: ");
-  //   fgets(buffer, sizeof(buffer), stdin);
-  //   sscanf(buffer, "%d", &p[i].pr);
+  int np, quantum, num_queues, choice;
+  Process *p = NULL;
 
-  // // Initialize remaining fields to 0 (will be computed later)
-  // p[i].ct = p[i].tat = p[i].wt = p[i].rt = 0;
-  //}
-
-  // // 3. Quantum for Round Robin
-  // printf("\nEnter time quantum for Round Robin: ");
-  // fgets(buffer, sizeof(buffer), stdin);
-  // sscanf(buffer, "%d", &quantum);
-
-  // // 4. Multilevel Queue: number of queues and their priorities
-  // printf("Enter number of queues for Multilevel Queue Scheduling: ");
-  // fgets(buffer, sizeof(buffer), stdin);
-  // sscanf(buffer, "%d", &num_queues);
-  // int *queue_priorities = malloc(num_queues * sizeof(int));
-  // for (int i = 0; i < num_queues; i++) {
-  //   printf("  Priority of queue %d: ", i + 1);
-  //   fgets(buffer, sizeof(buffer), stdin);
-  //   sscanf(buffer, "%d", &queue_priorities[i]);
-  // }
-  int np = 4;
-  Process p[4];
-
-  // Process 1
-  p[0].id = 1;
-  p[0].at = 0;
-  p[0].et = 5;
-
-  // Process 2
-  p[1].id = 2;
-  p[1].at = 1;
-  p[1].et = 3;
-
-  // Process 3
-  p[2].id = 3;
-  p[2].at = 2;
-  p[2].et = 8;
-
-  // Process 4
-  p[3].id = 4;
-  p[3].at = 4;
-  p[3].et = 2;
-  // Optional: print what was read (to verify)
-  printf("\n=== Input Summary ===\n");
-  for (int i = 0; i < np; i++) {
-    printf("Process %d: id=%d, at=%d, bt=%d, prio=%d\n", i + 1, p[i].id,
-           p[i].at, p[i].et, p[i].pr);
+  printf("Enter number of processes: ");
+  scanf("%d", &np);
+  p = (Process *)malloc(np * sizeof(Process));
+  if (!p) {
+    printf("Memory allocation failed\n");
+    return 1;
   }
-  // printf("Round Robin quantum = %d\n", quantum);
-  // printf("Multilevel queues priorities: ");
-  // for (int i = 0; i < num_queues; i++)
-  //   printf("%d ", queue_priorities[i]);
-  // printf("\n");
 
-  sjf(p, np);
+  for (int i = 0; i < np; i++) {
+    printf("\n--- Process %d ---\n", i + 1);
+    printf("  Identifier: ");
+    scanf("%d", &p[i].id);
+    printf("  Arrival time: ");
+    scanf("%d", &p[i].arrival_time);
+    printf("  Burst time: ");
+    scanf("%d", &p[i].execution_timet);
+    printf("  Priority: ");
+    scanf("%d", &p[i].priorty);
+    p[i].completion_timet = p[i].turnaroundtime = p[i].waiting_timet =
+        p[i].respanse_time = 0;
+    p[i].pid = -1;
+  }
 
-  // Free allocated memory
-  // free(p);
-  // free(priority);
-  // free(queue_priorities);
+  printf("\nEnter time quantum for Round Robin: ");
+  scanf("%d", &quantum);
 
+  printf("\n========== Scheduling Algorithms ==========\n");
+  printf("1. First Come First Served (FCFS)\n");
+  printf("2. Shortest Job First (SJF) – non-preemptive\n");
+  printf("3. Multilevel Queue (FCFS/SJF per queue)\n");
+  printf("Enter your choice: ");
+  scanf("%d", &choice);
+
+  switch (choice) {
+  case 1:
+    fcfs(p, np);
+    break;
+  case 2:
+    sjf(p, np);
+    break;
+  case 3: {
+    printf("\nEnter number of queues: ");
+    scanf("%d", &num_queues);
+    QueueLevel *queues = (QueueLevel *)malloc(num_queues * sizeof(QueueLevel));
+    if (!queues) {
+      free(p);
+      return 1;
+    }
+    for (int i = 0; i < num_queues; i++) {
+      printf("\n--- Queue %d ---\n", i);
+      printf("  Priority (lower = higher): ");
+      scanf("%d", &queues[i].priority);
+      printf("  Algorithm (0=FCFS,1=SJF): ");
+      int algo_choice;
+      scanf("%d", &algo_choice);
+      queues[i].algo = (algo_choice == 0) ? ALGO_FCFS : ALGO_SJF;
+      queues[i].quantum = 0;
+      queues[i].size = 0;
+      if (queues[i].algo == ALGO_FCFS) {
+        queues[i].fcfs_queue = create_queue();
+        queues[i].sjf_heap = NULL;
+      } else {
+        queues[i].fcfs_queue = NULL;
+        queues[i].sjf_heap = create_heap(10);
+      }
+    }
+    printf("\n--- Process to Queue Assignment ---\n");
+    for (int i = 0; i < np; i++) {
+      printf("Process %d (ID=%d): queue index (0..%d): ", i + 1, p[i].id,
+             num_queues - 1);
+      int qid;
+      scanf("%d", &qid);
+      while (qid < 0 || qid >= num_queues) {
+        printf("Invalid. Enter 0..%d: ", num_queues - 1);
+        scanf("%d", &qid);
+      }
+      p[i].pid = qid;
+    }
+    Process **proc_ptrs = (Process **)malloc(np * sizeof(Process *));
+    for (int i = 0; i < np; i++)
+      proc_ptrs[i] = &p[i];
+    multilevel_queue(queues, num_queues, proc_ptrs, np);
+    for (int i = 0; i < num_queues; i++) {
+      if (queues[i].fcfs_queue)
+        free_queue(queues[i].fcfs_queue);
+      if (queues[i].sjf_heap)
+        free_heap(queues[i].sjf_heap);
+    }
+    free(queues);
+    free(proc_ptrs);
+    break;
+  }
+  default:
+    printf("Invalid choice.\n");
+  }
+  free(p);
   return 0;
 }

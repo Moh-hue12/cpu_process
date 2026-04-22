@@ -1,5 +1,5 @@
+#include "../Algorithms.h"
 #include "../utils.h"
-//--------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------
 // the fcfs with sorting algorithme
 //// we sort the procces from the 1st arrived to the last one
@@ -102,7 +102,7 @@ void fcfs(Process p[], int n) {
     // then the procss time has arrived and we make sure we don't add the same
     // process we added on prevouse iteration
     for (int i = 0; i < n; i++) {
-      if (p[i].at <= time && !in_queue[i]) {
+      if (p[i].arrival_time <= time && !in_queue[i]) {
         enqueue(queue, &p[i]);
         in_queue[i] = 1;
       }
@@ -116,7 +116,7 @@ void fcfs(Process p[], int n) {
     if (is_empty(queue)) {
       for (int i = 0; i < n; i++)
         if (!in_queue[i]) {
-          time = p[i].et;
+          time = p[i].execution_timet;
           break;
         }
       continue;
@@ -124,12 +124,12 @@ void fcfs(Process p[], int n) {
 
     Process *current = dequeue(queue);
 
-    current->rt = time - current->at;
+    current->respanse_time = time - current->arrival_time;
     // time become the total exection time from the start to the current process
-    time += current->et;
-    current->ct = time;
-    current->tat = current->ct - current->at;
-    current->wt = current->tat - current->et;
+    time += current->execution_timet;
+    current->completion_timet = time;
+    current->turnaroundtime = current->completion_timet - current->arrival_time;
+    current->waiting_timet = current->turnaroundtime - current->execution_timet;
 
     j++;
   }

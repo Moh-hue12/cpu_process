@@ -1,4 +1,5 @@
 #include "utils.h"
+#include <stdlib.h>
 
 // Helper: swap two Process pointers
 static void swap(Process **a, Process **b) {
@@ -7,14 +8,13 @@ static void swap(Process **a, Process **b) {
   *b = temp;
 }
 
-// Bubble up: maintain min-heap property after insertion
 static void heapify_up(MinHeap *heap, int idx) {
   while (idx > 0) {
     int parent = (idx - 1) / 2;
-    // Compare burst time, then arrival time for tie‑break
-    if (heap->arr[parent]->et > heap->arr[idx]->et ||
-        (heap->arr[parent]->et == heap->arr[idx]->et &&
-         heap->arr[parent]->at > heap->arr[idx]->at)) {
+    if (heap->arr[parent]->execution_timet > heap->arr[idx]->execution_timet ||
+        (heap->arr[parent]->execution_timet ==
+             heap->arr[idx]->execution_timet &&
+         heap->arr[parent]->arrival_time > heap->arr[idx]->arrival_time)) {
       swap(&heap->arr[parent], &heap->arr[idx]);
       idx = parent;
     } else {
@@ -23,7 +23,6 @@ static void heapify_up(MinHeap *heap, int idx) {
   }
 }
 
-// Bubble down: restore heap property after removal
 static void heapify_down(MinHeap *heap, int idx) {
   int left, right, smallest;
   while (1) {
@@ -31,15 +30,19 @@ static void heapify_down(MinHeap *heap, int idx) {
     right = 2 * idx + 2;
     smallest = idx;
     if (left < heap->size &&
-        (heap->arr[left]->et < heap->arr[smallest]->et ||
-         (heap->arr[left]->et == heap->arr[smallest]->et &&
-          heap->arr[left]->at < heap->arr[smallest]->at))) {
+        (heap->arr[left]->execution_timet <
+             heap->arr[smallest]->execution_timet ||
+         (heap->arr[left]->execution_timet ==
+              heap->arr[smallest]->execution_timet &&
+          heap->arr[left]->arrival_time < heap->arr[smallest]->arrival_time))) {
       smallest = left;
     }
-    if (right < heap->size &&
-        (heap->arr[right]->et < heap->arr[smallest]->et ||
-         (heap->arr[right]->et == heap->arr[smallest]->et &&
-          heap->arr[right]->at < heap->arr[smallest]->at))) {
+    if (right < heap->size && (heap->arr[right]->execution_timet <
+                                   heap->arr[smallest]->execution_timet ||
+                               (heap->arr[right]->execution_timet ==
+                                    heap->arr[smallest]->execution_timet &&
+                                heap->arr[right]->arrival_time <
+                                    heap->arr[smallest]->arrival_time))) {
       smallest = right;
     }
     if (smallest != idx) {
@@ -72,7 +75,6 @@ void heap_push(MinHeap *heap, Process *p) {
   if (!heap)
     return;
   if (heap->size >= heap->capacity) {
-    // Expand capacity (double)
     int new_cap = heap->capacity * 2;
     Process **new_arr =
         (Process **)realloc(heap->arr, new_cap * sizeof(Process *));
