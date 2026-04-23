@@ -114,11 +114,19 @@ void fcfs(Process p[], int n) {
     // (time in this moment refer to the execution time to the all procees
     // beffor b), sow we move time to the time that b arrived
     if (is_empty(queue)) {
-      for (int i = 0; i < n; i++)
+      // find the earliest arrival time among processes not yet added to the
+      // queue
+      int next_arrival = -1;
+      for (int i = 0; i < n; i++) {
         if (!in_queue[i]) {
-          time = p[i].execution_timet;
-          break;
+          if (next_arrival == -1 || p[i].arrival_time < next_arrival) {
+            next_arrival = p[i].arrival_time;
+          }
         }
+      }
+      if (next_arrival != -1) {
+        time = next_arrival; // jump to that arrival time
+      }
       continue;
     }
 

@@ -43,4 +43,8 @@ void free_heap(MinHeap *heap);
 // Printing helper
 void print_results(Process p[], int n, const char *def);
 
+// order the process by arrival time
+
+void insertionSort_by_at(Process arr[], int n);
+
 #endif

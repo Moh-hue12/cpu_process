@@ -17,7 +17,7 @@ void insertionSort_by_pr(QueueLevel arr[], int n) {
 
 void multilevel_queue(QueueLevel queues[], int num_queues,
                       Process *all_processes[], int total_processes) {
-  // 1. Sort queues by priority
+  //  Sort queues by priority
   insertionSort_by_pr(queues, num_queues);
 
   // See if a process added to his queue or not
@@ -25,9 +25,8 @@ void multilevel_queue(QueueLevel queues[], int num_queues,
   int time = 0;
   int completed = 0;
 
-  // Main scheduling loop
   while (completed < total_processes) {
-    // 2. Add all processes that have arrived by current time to their
+    // Add all processes that have arrived by current time to their
     // respective queues
     for (int i = 0; i < total_processes; i++) {
       Process *p = all_processes[i];
@@ -42,7 +41,7 @@ void multilevel_queue(QueueLevel queues[], int num_queues,
       }
     }
 
-    // 3. Find the heighst priority queue
+    // Find the heighst priority queue
     // and not being empty
     int selected_q = -1;
     for (int q = 0; q < num_queues; q++) {
@@ -57,7 +56,7 @@ void multilevel_queue(QueueLevel queues[], int num_queues,
       }
     }
 
-    // 4. If no process ready, jump time to next arrival
+    //  If no process ready, jump time to next arrival
     // it select the smallest exucution time and jump
     // better then incrment time by one , qhich will take time
     if (selected_q == -1) {
@@ -74,7 +73,7 @@ void multilevel_queue(QueueLevel queues[], int num_queues,
       }
     }
 
-    // 5. Get the process from the selected queue according to its
+    //  Get the process from the selected queue according to its
     // algorithm
     Process *current = NULL;
     if (queues[selected_q].algo == ALGO_FCFS) {
@@ -92,7 +91,7 @@ void multilevel_queue(QueueLevel queues[], int num_queues,
     completed++;
   }
 
-  // 6. Print results
+  //  Print results
   printf("\n===== Multilevel Queue Scheduling =====\n");
   printf("Number of queues: %d\n", num_queues);
   for (int q = 0; q < num_queues; q++) {

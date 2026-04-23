@@ -24,5 +24,8 @@ void fcfs(Process p[], int n);
 void sjf(Process p[], int n);
 void multilevel_queue(QueueLevel queues[], int num_queues,
                       Process *all_processes[], int total_processes);
+void priority_p(Process p[], int n);
+void priority_np(Process p[], int n);
+void round_robin(const Process proc_list[], int proc_count, int quantum);
 
 #endif

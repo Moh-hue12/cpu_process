@@ -1,4 +1,5 @@
 #include "Algorithms.h"
+#include "utils.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -29,6 +30,8 @@ int main() {
     p[i].pid = -1;
   }
 
+  insertionSort_by_at(p, np);
+
   printf("\nEnter time quantum for Round Robin: ");
   scanf("%d", &quantum);
 
@@ -36,6 +39,9 @@ int main() {
   printf("1. First Come First Served (FCFS)\n");
   printf("2. Shortest Job First (SJF) – non-preemptive\n");
   printf("3. Multilevel Queue (FCFS/SJF per queue)\n");
+  printf("4. Priority – preemptive\n");
+  printf("5. Priority – non-preemptive\n");
+  printf("6. Round robin\n");
   printf("Enter your choice: ");
   scanf("%d", &choice);
 
@@ -98,6 +104,17 @@ int main() {
     free(proc_ptrs);
     break;
   }
+  case 4:
+    priority_p(p, np);
+    break;
+
+  case 5:
+    priority_np(p, np);
+    break;
+
+  case 6:
+    round_robin(p, np, quantum);
+    break;
   default:
     printf("Invalid choice.\n");
   }
