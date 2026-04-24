@@ -14,7 +14,6 @@
 
 #include "../Algorithms.h"
 #include "../utils.h"
-#include <stdio.h>
 
 void srtf(Process p[], int n) {
   /* ── Local working copy ── */
