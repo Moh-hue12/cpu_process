@@ -42,6 +42,7 @@ int main() {
   printf("4. Priority – preemptive\n");
   printf("5. Priority – non-preemptive\n");
   printf("6. Round robin\n");
+  printf("2. Shortest Remaining Time First (SRTF) – non-preemptive\n");
   printf("Enter your choice: ");
   scanf("%d", &choice);
 
@@ -114,6 +115,9 @@ int main() {
 
   case 6:
     round_robin(p, np, quantum);
+    break;
+  case 7:
+    srtf(p, np);
     break;
   default:
     printf("Invalid choice.\n");

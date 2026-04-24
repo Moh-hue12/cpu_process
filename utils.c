@@ -31,3 +31,17 @@ void insertionSort_by_at(Process arr[], int n) {
     arr[j + 1] = key;
   }
 }
+
+void print_gantt(int gantt_pid[], int gantt_start[], int gantt_len) {
+  printf("\nGantt Chart:\n|");
+  for (int i = 0; i < gantt_len; i++) {
+    if (gantt_pid[i] == -1)
+      printf(" IDL|");
+    else
+      printf(" P%-2d|", gantt_pid[i]);
+  }
+  printf("\n");
+  for (int i = 0; i <= gantt_len; i++)
+    printf("%-5d", gantt_start[i]);
+  printf("\n");
+}

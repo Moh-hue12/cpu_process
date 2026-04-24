@@ -95,6 +95,11 @@ void fcfs(Process p[], int n) {
   // then the current time increased to the time where the current procces ended
   // sow the next one start , and start the iteration all over again
 
+  /* Gantt */
+  int gantt_pid[n + 1];
+  int gantt_start[n + 2];
+  int gantt_len = 0;
+
   while (j < n) {
 
     // we add the arrived process to the queue
@@ -125,12 +130,21 @@ void fcfs(Process p[], int n) {
         }
       }
       if (next_arrival != -1) {
-        time = next_arrival; // jump to that arrival time
+        /* record idle slot */
+        gantt_pid[gantt_len] = -1;
+        gantt_start[gantt_len] = time;
+        gantt_len++;
+        time = next_arrival;
       }
       continue;
     }
 
     Process *current = dequeue(queue);
+
+    /* record bar */
+    gantt_pid[gantt_len] = current->id;
+    gantt_start[gantt_len] = time;
+    gantt_len++;
 
     current->respanse_time = time - current->arrival_time;
     // time become the total exection time from the start to the current process
@@ -141,6 +155,10 @@ void fcfs(Process p[], int n) {
 
     j++;
   }
+
+  /* close last bar */
+  gantt_start[gantt_len] = time;
+  print_gantt(gantt_pid, gantt_start, gantt_len);
   free(queue);
   print_results(p, n, "FCFS");
 }

@@ -1,0 +1,60 @@
+# CPU Scheduling Algorithms Simulator
+
+A C implementation of classic CPU scheduling algorithms, built as part of an OS course project.
+
+## Algorithms implemented
+
+| Algorithm | Type |
+|---|---|
+| FCFS | Non-preemptive |
+| SJF | Non-preemptive |
+| SRTF | Preemptive (shortest remaining time first) |
+| Priority | Preemptive |
+| Priority | Non-preemptive |
+| Round Robin | Preemptive |
+| Multilevel Queue | — |
+
+Each algorithm outputs a Gantt chart and a results table showing completion time, turnaround time, waiting time, and response time for every process.
+
+## How to compile
+
+```bash
+gcc -o main main.c \
+    Scheduling_Algorithms/miltilevel_queue.c \
+    Scheduling_Algorithms/FCFS.c \
+    Scheduling_Algorithms/SJF.c \
+    Scheduling_Algorithms/PRIORITYPRE.c \
+    Scheduling_Algorithms/PRIOTITY_NONPRE.c \
+    Scheduling_Algorithms/SRTF.c \
+    Scheduling_Algorithms/ROUND_ROBIN.c \
+    utils.c \
+    Priority_queue.c \
+    Queue.c
+```
+
+## How to run
+
+```bash
+./main
+```
+
+You will be prompted to enter the number of processes and their details (arrival time, burst time, priority).
+
+## File structure
+
+```
+.
+├── main.c                            # entry point, process input and algorithm selection
+├── Algorithms.h                      # shared function declarations
+├── process.h                         # Process struct definition
+├── utils.c / utils.h                 # result printing and helpers
+├── Queue.c / Priority_queue.c        # queue data structures
+└── Scheduling_Algorithms/
+    ├── FCFS.c
+    ├── SJF.c
+    ├── SRTF.c
+    ├── PRIORITYPRE.c
+    ├── PRIOTITY_NONPRE.c
+    ├── ROUND_ROBIN.c
+    └── miltilevel_queue.c
+```

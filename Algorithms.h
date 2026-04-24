@@ -27,5 +27,6 @@ void multilevel_queue(QueueLevel queues[], int num_queues,
 void priority_p(Process p[], int n);
 void priority_np(Process p[], int n);
 void round_robin(const Process proc_list[], int proc_count, int quantum);
+void srtf(Process p[], int n);
 
 #endif

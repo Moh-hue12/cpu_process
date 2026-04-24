@@ -42,6 +42,7 @@ void free_heap(MinHeap *heap);
 
 // Printing helper
 void print_results(Process p[], int n, const char *def);
+void print_gantt(int gantt_pid[], int gantt_start[], int gantt_len);
 
 // order the process by arrival time
 
