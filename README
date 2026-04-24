@@ -37,6 +37,13 @@ gcc -o main main.c \
 ```bash
 ./main
 ```
+```
+or by make File
+make          # build
+make clean    # remove .o files
+make re       # full rebuild
+./scheduler   # run
+```
 
 You will be prompted to enter the number of processes and their details (arrival time, burst time, priority).
 
