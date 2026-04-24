@@ -6,7 +6,6 @@ void insertionSort_by_pr(QueueLevel arr[], int n) {
   for (int i = 1; i < n; ++i) {
     QueueLevel key = arr[i];
     int j = i - 1;
-
     while (j >= 0 && arr[j].priority > key.priority) {
       arr[j + 1] = arr[j];
       j = j - 1;
@@ -19,12 +18,16 @@ void multilevel_queue(QueueLevel queues[], int num_queues,
                       Process *all_processes[], int total_processes) {
   //  Sort queues by priority
   insertionSort_by_pr(queues, num_queues);
-
   // See if a process added to his queue or not
   int *added = calloc(total_processes, sizeof(int));
+
+  /* Gantt */
+  int gantt_pid[total_processes + 1];
+  int gantt_start[total_processes + 2];
+  int gantt_len = 0;
+
   int time = 0;
   int completed = 0;
-
   while (completed < total_processes) {
     // Add all processes that have arrived by current time to their
     // respective queues
@@ -40,7 +43,6 @@ void multilevel_queue(QueueLevel queues[], int num_queues,
         added[i] = 1;
       }
     }
-
     // Find the heighst priority queue
     // and not being empty
     int selected_q = -1;
@@ -55,7 +57,6 @@ void multilevel_queue(QueueLevel queues[], int num_queues,
         break;
       }
     }
-
     //  If no process ready, jump time to next arrival
     // it select the smallest exucution time and jump
     // better then incrment time by one , qhich will take time
@@ -66,13 +67,16 @@ void multilevel_queue(QueueLevel queues[], int num_queues,
           next_arrival = all_processes[i]->arrival_time;
       }
       if (next_arrival != INT_MAX) {
+        /* record idle slot */
+        gantt_pid[gantt_len] = -1;
+        gantt_start[gantt_len] = time;
+        gantt_len++;
         time = next_arrival;
         continue;
       } else {
         break; // should not happen
       }
     }
-
     //  Get the process from the selected queue according to its
     // algorithm
     Process *current = NULL;
@@ -82,14 +86,22 @@ void multilevel_queue(QueueLevel queues[], int num_queues,
       current = heap_pop(queues[selected_q].sjf_heap);
     }
 
+    /* record bar */
+    gantt_pid[gantt_len] = current->id;
+    gantt_start[gantt_len] = time;
+    gantt_len++;
+
     current->respanse_time = time - current->arrival_time;
     time += current->execution_timet;
     current->completion_timet = time;
     current->turnaroundtime = current->completion_timet - current->arrival_time;
     current->waiting_timet = current->turnaroundtime - current->execution_timet;
-
     completed++;
   }
+
+  /* close last bar */
+  gantt_start[gantt_len] = time;
+  print_gantt(gantt_pid, gantt_start, gantt_len);
 
   //  Print results
   printf("\n===== Multilevel Queue Scheduling =====\n");
@@ -114,6 +126,5 @@ void multilevel_queue(QueueLevel queues[], int num_queues,
   printf("Average Turnaround Time = %.2f\n", sum_tat / total_processes);
   printf("Average Waiting Time    = %.2f\n", sum_wt / total_processes);
   printf("Average Response Time   = %.2f\n", sum_rt / total_processes);
-
   free(added);
 }
